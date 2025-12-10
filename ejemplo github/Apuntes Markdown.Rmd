@@ -1,0 +1,257 @@
+---
+title: "Mi primer informe en R Markdown"
+subtitle: "Ejercicio de YAML, Código y Texto"
+author: "Pedro Sánchez Meléndez"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE) 
+#iclude=False (el código no aparecerá)
+#knitr: paquete que procesa los chunks
+#opts_chunk$set define opciones por defecto para todos los chunks 
+#echo=TRUE (Todo el código de los chunks se mostrará en el documento final)
+```
+
+[Este es mi documento resumen de las características de **R Markdown**.]{style="color:red;font-family:Verdana; font-size:20px;"}\
+A partir del documento resuelto de la práctica de *YAML* y *Código*, vamos a implementar mejoras en el formato.
+
+R Markdown permite combinar **texto** y **código** dentro de un mismo archivo. Con él podemos crear informes reproducibles que integren resultados, tablas y figuras.\
+Para aprovecharlo al máximo, es importante conocer las opciones de formato de texto que ofrece *Markdown*.
+
+Sobre este texto debemos:
+
+1.  Aplicar\
+    1.1. negrita\
+    1.2. cursiva
+2.  Crear\
+    2.1. párrafos\
+    2.2. saltos de línea
+3.  Cambiar el color y la fuente del texto.
+
+<!-- Esto es un comentario en el texto -->
+
+# R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+------------------------------------------------------------------------
+
+# Ejercicio de código
+
+Vamos a prácticar con el código.
+
+## Chunk Básico
+
+```{r}
+2+2
+```
+
+## Opciones de chunk
+
+### echo
+MUESTRA SOLO EL RESULTADO (FALSE)
+
+true
+
+```{r echo=TRUE}
+2+2
+```
+
+false
+
+```{r echo=FALSE}
+2+2
+```
+
+### eval
+CONTROLA SI EL CÓDIGO SE EJECUTA O NO
+true
+
+```{r eval=TRUE}
+mean(cars$speed)
+```
+
+false
+
+```{r eval=FALSE}
+mean(cars$speed)
+```
+
+### warning and message
+MUESTRA O NO WARNING
+true
+
+```{r warning=TRUE}
+log(-1)
+```
+
+false
+
+```{r warning=FALSE}
+log(-1)
+```
+
+### include
+determina si el chunk completo aparece en el documento final.
+
+true
+
+```{r include=TRUE}
+3*3
+```
+
+false
+
+```{r include=FALSE}
+3*3
+```
+
+### echo vs include
+
+echo=FALSE = oculta el código, muestra el resultado.
+
+include=FALSE = oculta todo, pero ejecuta el chunk en segundo plano.
+
+echo false
+
+```{r echo=FALSE}
+suma4 <- 4+4
+print(suma4)
+```
+
+include false
+
+```{r include=FALSE}
+suma5 <- 5+5
+print(suma5)
+```
+
+```{r}
+print(suma4)
+```
+
+```{r}
+print(suma5)
+```
+
+### results
+"markup" → mostrar resultados normalmente
+"hide" → ejecutar el código pero no mostrar resultados
+"asis" → interpretar el resultado como Markdown
+
+
+true
+
+```{r results='markup'}
+suma4 <- 4+4
+print(suma4)
+```
+
+false
+
+```{r results='hide'}
+suma4 <- 4+4
+print(suma4)
+```
+
+## Chunk-label
+
+```{r suma, echo=TRUE}
+2+2
+```
+
+------------------------------------------------------------------------
+
+\newpage
+
+# Insertar tablas y gráficos
+
+## Including Plots
+
+You can also embed plots, for example:[^1]
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Insertar tablas
+
+```{r coches}
+coches <- summary(cars)
+
+# Mostramos el resultado en tabla
+knitr::kable(coches, caption = "Resumen del dataset cars")
+```
+
+\newpage
+
+------------------------------------------------------------------------
+
+# dplyr and ggplot
+
+Vamos a practicar a incorporar datos con dplyr y ggplot
+
+```{r cargar-librerias, echo=FALSE, warning=FALSE, message=FALSE}
+#Vamos a evitar todos los mensajes "warning" al cargar la librería
+library('dplyr')
+library('ggplot2')
+```
+
+```{r summarise cars}
+# Calculamos la media de velocidad y distancia del dataset cars
+cars %>%
+  summarise(
+    media_speed = mean(speed),
+    media_dist = mean(dist)
+  )
+```
+
+Vamos a visualizar los datos del dataset cars mediante tablas
+
+```{r objeto-resumen, echo=FALSE, message=FALSE, warning=FALSE, results='markup'}
+# Calculamos la media de velocidad y distancia del dataset cars
+resumen <- cars %>%
+  summarise(
+    media_speed = mean(speed),
+    media_dist = mean(dist)
+  )
+
+# Mostramos el resultado en tabla
+knitr::kable(resumen, caption = "Tabla 1. Medias del dataset cars", digits = 1, format = "pipe")
+#resumen-> El objeto a mostrar (la tabla que creaste).
+#caption = "Tabla 1. Medias del dataset cars"Añade una descripción a la tabla.
+#digits=1 Redondea los valores a 1 decimal
+```
+
+------------------------------------------------------------------------
+
+# Resultados en línea
+
+Nuestro amado profesor Adrián dice:
+
+> "Este símbolo sirve para destacar citas textuales"
+
+El número total de coches en el dataset cars es `r nrow(cars)`. Utilizo `nrow(cars)` para calcularlo.código R en línea.
+Al knitear, R ejecuta esa expresión y sustituye el código por su valor
+
+La media de la velocidad de los coches en el dataset cars es `r mean(cars$speed)`
+
+
+
+Nuestro amado profesor Adrián dice:
+
+> "Este símbolo sirve para destacar citas textuales"
+
